@@ -41,7 +41,13 @@ void RenderGame() {
 
   if (gameOver) {
     ImGui::Text("Game Over!");
-    ImGui::Text("Winner: %d", gameWinner);
+    if (gameWinner == -1) {
+      ImGui::Text("It's a Draw!");
+    } else if (gameWinner == 0) {
+      ImGui::Text("Winner: O (Blue)");
+    } else {
+      ImGui::Text("Winner: X (Red)");
+    }
     if (ImGui::Button("Reset Game")) {
       game->stopGame();
       game->setUpBoard();

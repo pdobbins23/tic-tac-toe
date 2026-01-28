@@ -1,6 +1,16 @@
 # Tic-Tac-Toe Implementation
 
-## Changes Made
+## Additions - Peter Dobbins
+
+**NOTE:** I developed this on Linux (NixOS).
+
+To build the project, run:
+
+```
+cmake -B build
+
+cmake --build build
+```
 
 - Fixed `actionForEmptyHolder` logic to correctly check if holder is empty
 - Added game-over check to prevent moves after win/draw

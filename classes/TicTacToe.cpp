@@ -74,17 +74,20 @@ void TicTacToe::setUpBoard() {
 bool TicTacToe::actionForEmptyHolder(BitHolder *holder) {
   // 1) Guard clause: if holder is nullptr, fail fast.
   //    (Beginner hint: always check pointers before using them.)
-  if (!holder) return false;
+  if (!holder)
+    return false;
 
   // 1.5) Don't allow moves if game is over (winner or draw)
-  if (checkForWinner() || checkForDraw()) return false;
+  if (checkForWinner() || checkForDraw())
+    return false;
 
   // 2) Is it actually empty?
   //    Ask the holder for its current Bit using the bit() function.
   //    If there is already a Bit in this holder, return false.
   Bit *bit = holder->bit();
 
-  if (bit) return false;
+  if (bit)
+    return false;
 
   // 3) Place the current player's piece on this holder:
   //    - Figure out whose turn it is (getCurrentPlayer()->playerNumber()).
@@ -140,7 +143,8 @@ Player *TicTacToe::ownerAt(int index) const {
   int y = index / 3;
   int x = index % 3;
   Bit *bit = _grid[y][x].bit();
-  if (!bit) return nullptr;
+  if (!bit)
+    return nullptr;
   return bit->getOwner();
 }
 
