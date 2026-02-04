@@ -286,8 +286,117 @@ void TicTacToe::setStateString(const std::string &s) {
 }
 
 //
+// negamax helper: evaluate board from the perspective of `player`.
+// board[i]: 0 = empty, 1 = player 0's piece, 2 = player 1's piece.
+// `player` is 1 or 2 (matching the board encoding).
+// Returns a score: +10-depth for a win, -(10-depth) for a loss, 0 for a draw.
+//
+int TicTacToe::negamax(int *board, int player, int depth) {
+  static const int winTriples[8][3] = {
+      {0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6},
+      {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}
+  };
+
+  int opponent = (player == 1) ? 2 : 1;
+
+  // Check if the opponent has won
+  for (int i = 0; i < 8; i++) {
+    if (board[winTriples[i][0]] == opponent &&
+        board[winTriples[i][1]] == opponent &&
+        board[winTriples[i][2]] == opponent) {
+      // The previous player won
+      return -(10 - depth);
+    }
+  }
+
+  // Check for draw
+  bool hasEmpty = false;
+
+  for (int i = 0; i < 9; i++) {
+    if (board[i] == 0) {
+      hasEmpty = true;
+
+      break;
+    }
+  }
+
+  if (!hasEmpty) {
+    return 0;
+  }
+
+  // Recurse over all possible moves and pick best
+  int bestScore = -100;
+  for (int i = 0; i < 9; i++) {
+    if (board[i] == 0) {
+      board[i] = player;
+
+      int score = -negamax(board, opponent, depth + 1);
+
+      board[i] = 0;
+
+      if (score > bestScore) {
+        bestScore = score;
+      }
+    }
+  }
+  return bestScore;
+}
+
+//
 // this is the function that will be called by the AI
 //
 void TicTacToe::updateAI() {
-  // we will implement the AI in the next assignment!
+  // Build a board array from the current grid state
+  // 0 = empty, 1 = player 0's piece, 2 = player 1's piece
+  int board[9];
+
+  for (int y = 0; y < 3; y++) {
+    for (int x = 0; x < 3; x++) {
+      int idx = y * 3 + x;
+
+      Bit *bit = _grid[y][x].bit();
+
+      if (bit == nullptr) {
+        board[idx] = 0;
+      } else {
+        board[idx] = bit->getOwner()->playerNumber() + 1;
+      }
+    }
+  }
+
+  int aiPlayer = getCurrentPlayer()->playerNumber() + 1;
+  int opponent = (aiPlayer == 1) ? 2 : 1;
+
+  // Find the best move using negamax
+  int bestScore = -100;
+  int bestMove = -1;
+
+  for (int i = 0; i < 9; i++) {
+    if (board[i] == 0) {
+      board[i] = aiPlayer;
+
+      int score = -negamax(board, opponent, 0);
+
+      board[i] = 0;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
+      }
+    }
+  }
+
+  // Place the piece at best move
+  if (bestMove >= 0) {
+    int y = bestMove / 3;
+    int x = bestMove % 3;
+
+    Bit *newBit = PieceForPlayer(getCurrentPlayer()->playerNumber());
+
+    newBit->setPosition(_grid[y][x].getPosition());
+
+    _grid[y][x].setBit(newBit);
+
+    endTurn();
+  }
 }

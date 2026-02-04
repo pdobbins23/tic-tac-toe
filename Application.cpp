@@ -10,6 +10,7 @@ namespace ClassGame {
 TicTacToe *game = nullptr;
 bool gameOver = false;
 int gameWinner = -1;
+bool aiEnabled = false;
 
 //
 // game starting point
@@ -39,6 +40,14 @@ void RenderGame() {
               game->getCurrentPlayer()->playerNumber());
   ImGui::Text("Current Board State: %s", game->stateString().c_str());
 
+  if (ImGui::Checkbox("AI Opponent", &aiEnabled)) {
+    if (aiEnabled) {
+      game->setAIPlayer(1);
+    } else {
+      game->getPlayerAt(1)->setAIPlayer(false);
+    }
+  }
+
   if (gameOver) {
     ImGui::Text("Game Over!");
     if (gameWinner == -1) {
@@ -51,6 +60,9 @@ void RenderGame() {
     if (ImGui::Button("Reset Game")) {
       game->stopGame();
       game->setUpBoard();
+      if (aiEnabled) {
+        game->setAIPlayer(1);
+      }
       gameOver = false;
       gameWinner = -1;
     }

@@ -12,6 +12,8 @@ cmake -B build
 cmake --build build
 ```
 
+## Tic-Tac-Toe
+
 - Fixed `actionForEmptyHolder` logic to correctly check if holder is empty
 - Added game-over check to prevent moves after win/draw
 - Implemented `stopGame` to free memory by destroying all bits
@@ -20,3 +22,9 @@ cmake --build build
 - Implemented `checkForDraw` to detect full board with no winner
 - Implemented `stateString` to serialize board state
 - Implemented `setStateString` to restore board from saved state
+
+## Negamax AI
+
+- Implemented negamax algorithm
+- AI evaluates all possible moves recursively and plays perfectly
+- Added "AI Opponent" checkbox in the settings panel to toggle the AI on and off
